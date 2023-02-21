@@ -17,8 +17,8 @@ export function createReanimatedContext<Store>(
 ): [
   Provider: React.ComponentType<ProviderProps<Store>>,
   useFastContext: <SelectorOutput>(
-    selector: (store: Store) => SelectorOutput,
-  ) => [SelectorOutput, (value: Partial<Store>) => void],
+    selector: (store: Store) => Store | SelectorOutput,
+  ) => [Store | SelectorOutput, (value: Partial<Store>) => void],
 ] {
   function useReanimatedData(initialData: Store): {
     get: () => Store
@@ -59,11 +59,13 @@ export function createReanimatedContext<Store>(
     )
   }
   function useReanimatedContext<SelectorOutput>(
-    selector: (store: Store) => SelectorOutput,
-  ): [SelectorOutput, (value: Partial<Store>) => void] {
+    selector: (store: Store) => Store | SelectorOutput = (store) => store,
+  ): [Store | SelectorOutput, (value: Partial<Store>) => void] {
     const store = useContext(Context)
     if (!store) {
-      throw new Error('Store not found')
+      throw new Error(
+        'Store not found. Are you calling this inside a createReanimatedContext Provider?',
+      )
     }
 
     const state = useSyncExternalStore(store.subscribe, () =>

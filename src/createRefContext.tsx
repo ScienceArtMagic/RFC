@@ -17,7 +17,7 @@ export function createRefContext<Store>(
   Provider: React.ComponentType<ProviderProps<Store>>,
   useFastContext: <SelectorOutput>(
     selector: (store: Store) => SelectorOutput,
-  ) => [SelectorOutput, (value: Partial<Store>) => void],
+  ) => [Store | SelectorOutput, (value: Partial<Store>) => void],
 ] {
   function useStoreData(initialData: Store): {
     get: () => Store
@@ -59,11 +59,13 @@ export function createRefContext<Store>(
   }
 
   function useFastContext<SelectorOutput>(
-    selector: (store: Store) => SelectorOutput,
-  ): [SelectorOutput, (value: Partial<Store>) => void] {
+    selector: (store: Store) => Store | SelectorOutput = (store) => store,
+  ): [Store | SelectorOutput, (value: Partial<Store>) => void] {
     const store = useContext(Context)
     if (!store) {
-      throw new Error('Store not found')
+      throw new Error(
+        'Store not found. Are you calling this inside a createFastContext Provider?',
+      )
     }
 
     const state = useSyncExternalStore(store.subscribe, () =>
