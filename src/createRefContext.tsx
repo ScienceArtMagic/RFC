@@ -59,7 +59,7 @@ export function createRefContext<Store>(
   }
 
   function useFastContext<SelectorOutput>(
-    selector: (store: Store) => Store | SelectorOutput = (store) => store,
+    selector?: (store: Store) => Store | SelectorOutput,
   ): [Store | SelectorOutput, (value: Partial<Store>) => void] {
     const store = useContext(Context)
     if (!store) {
@@ -68,8 +68,10 @@ export function createRefContext<Store>(
       )
     }
 
+    const selectorFn = selector ? selector : (store: Store) => store
+
     const state = useSyncExternalStore(store.subscribe, () =>
-      selector(store.get()),
+      selectorFn(store.get()),
     )
 
     return [state, store.set]
