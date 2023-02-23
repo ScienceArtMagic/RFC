@@ -59,7 +59,7 @@ export function createReanimatedContext<Store>(
     )
   }
   function useReanimatedContext<SelectorOutput>(
-    selector?: (store: Store) => Store | SelectorOutput,
+    selector: ((store: Store) => Store | SelectorOutput) | undefined,
   ): [Store | SelectorOutput, (value: Partial<Store>) => void] {
     const store = useContext(Context)
     if (!store) {

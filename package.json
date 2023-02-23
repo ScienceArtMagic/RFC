@@ -1,6 +1,6 @@
 {
   "name": "@scienceartmagic/rfc",
-  "version": "0.1.1",
+  "version": "0.1.2",
   "description": "RFC (Reanimated Fast Context): Jack Herrington's Fast Context, now with an additional version based on Reanimated's useSharedValue.",
   "main": "lib/commonjs/index",
   "module": "lib/module/index",
